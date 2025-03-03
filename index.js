@@ -31,6 +31,21 @@ async function run() {
     // Connect the client to the server	(optional starting in v4.7)
     await client.connect();
 
+    
+    app.put('/users/:id', async(req,res)=> {
+      const id = req.params.id;
+      const filter ={_id: new ObjectId(id)};
+      const options = { upsert: true };
+      const updatedDoc = {
+        $set : req.body
+      }
+
+      const result = await userCollection.updateOne(filter,updatedDoc,options)
+
+      res.send(result)
+
+    })
+
 
     app.get('/users', async (req, res) => {
       const user = userCollection.find()
