@@ -37,7 +37,22 @@ async function run() {
         const result = await user.toArray()
         res.send(result)
     })
-
+    
+    app.get('/users/equipment/:email', async (req, res) => {
+      try {
+          const email = req.params.email;
+          const query = { email: email }; // Query equipment by email
+          const result = await userCollection.find(query).toArray();
+          
+          if (result.length > 0) {
+              res.send(result);
+          } else {
+              res.status(404).send({ message: 'No equipment found for this user' });
+          }
+      } catch (error) {
+          res.status(500).send({ message: 'An error occurred', error: error.message });
+      }
+  });
 
     app.get('/users/:id', async(req,res)=> {
         const id = req.params.id;
