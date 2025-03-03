@@ -11,7 +11,7 @@ app.use(express.json())
 // CwQEyq0lxrOj8jg5
 
 
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const uri = "mongodb+srv://muhaimin:CwQEyq0lxrOj8jg5@cluster0.ytuhl.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
@@ -35,6 +35,14 @@ async function run() {
     app.get('/users', async (req,res)=> {
         const user = userCollection.find()
         const result = await user.toArray()
+        res.send(result)
+    })
+
+
+    app.get('/users/:id', async(req,res)=> {
+        const id = req.params.id;
+        const query = {_id : new ObjectId(id)}
+        const result = await userCollection.findOne(query);
         res.send(result)
     })
 
