@@ -23,13 +23,28 @@ const client = new MongoClient(uri, {
   }
 });
 
+
+    const userCollection = client.db('userCollect').collection('users')
+
 async function run() {
   try {
     // Connect the client to the server	(optional starting in v4.7)
     await client.connect();
 
 
-    
+    app.get('/users', async (req,res)=> {
+        const user = userCollection.find()
+        const result = await user.toArray()
+        res.send(result)
+    })
+
+    app.post('/users', async(req,res)=> {
+        const user = req.body;
+        const result = await userCollection.insertOne(user)
+        res.send(result)
+    })
+
+
 
 
 
