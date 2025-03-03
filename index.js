@@ -24,7 +24,7 @@ const client = new MongoClient(uri, {
 });
 
 
-    const userCollection = client.db('userCollect').collection('users')
+const userCollection = client.db('userCollect').collection('users')
 
 async function run() {
   try {
@@ -32,39 +32,38 @@ async function run() {
     await client.connect();
 
 
-    app.get('/users', async (req,res)=> {
-        const user = userCollection.find()
-        const result = await user.toArray()
-        res.send(result)
+    app.get('/users', async (req, res) => {
+      const user = userCollection.find()
+      const result = await user.toArray()
+      res.send(result)
     })
-    
+
     app.get('/users/equipment/:email', async (req, res) => {
-      try {
-          const email = req.params.email;
-          const query = { email: email }; // Query equipment by email
-          const result = await userCollection.find(query).toArray();
-          
-          if (result.length > 0) {
-              res.send(result);
-          } else {
-              res.status(404).send({ message: 'No equipment found for this user' });
-          }
-      } catch (error) {
-          res.status(500).send({ message: 'An error occurred', error: error.message });
-      }
-  });
+      const email = req.params.email;
+      const query = { email: email }; // Query equipment by email
+      const result = await userCollection.find(query).toArray();
+      res.send(result);
 
-    app.get('/users/:id', async(req,res)=> {
-        const id = req.params.id;
-        const query = {_id : new ObjectId(id)}
-        const result = await userCollection.findOne(query);
-        res.send(result)
+    });
+
+    app.get('/users/:id', async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) }
+      const result = await userCollection.findOne(query);
+      res.send(result)
     })
 
-    app.post('/users', async(req,res)=> {
-        const user = req.body;
-        const result = await userCollection.insertOne(user)
-        res.send(result)
+    app.post('/users', async (req, res) => {
+      const user = req.body;
+      const result = await userCollection.insertOne(user)
+      res.send(result)
+    })
+
+    app.delete('/users/:id', async(req,res)=> {
+      const id = req.params.id;
+      const query = {_id : new ObjectId(id)}
+      const result = await userCollection.deleteOne(query)
+      res.send(result)
     })
 
 
@@ -84,10 +83,10 @@ run().catch(console.dir);
 
 
 
-app.get('/', (req,res)=> {
-    res.send('Lotus website loading')
+app.get('/', (req, res) => {
+  res.send('Lotus website loading')
 })
 
-app.listen(port, ()=> {
-    console.log(`Lotus website loading on ${port}`)
+app.listen(port, () => {
+  console.log(`Lotus website loading on ${port}`)
 })
