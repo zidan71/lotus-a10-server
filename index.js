@@ -1,3 +1,4 @@
+require('dotenv').config()
 const express = require('express');
 const cors = require('cors');
 const port = process.env.PORT || 5000;
@@ -12,7 +13,7 @@ app.use(express.json())
 
 
 const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
-const uri = "mongodb+srv://muhaimin:CwQEyq0lxrOj8jg5@cluster0.ytuhl.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
+const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.ytuhl.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`;
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
 const client = new MongoClient(uri, {
@@ -54,14 +55,14 @@ async function run() {
     })
 
     app.get('/users/limit', async (req, res) => {
-      const user = userCollection.find().limit(6); // Limit to 6 products
+      const user = userCollection.find().limit(6); 
       const result = await user.toArray();
       res.send(result);
     });
 
     app.get('/users/equipment/:email', async (req, res) => {
       const email = req.params.email;
-      const query = { email: email }; // Query equipment by email
+      const query = { email: email }; 
       const result = await userCollection.find(query).toArray();
       res.send(result);
 
@@ -88,6 +89,7 @@ async function run() {
     })
 
 
+    
 
 
 
