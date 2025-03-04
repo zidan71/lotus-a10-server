@@ -53,6 +53,12 @@ async function run() {
       res.send(result)
     })
 
+    app.get('/users/limit', async (req, res) => {
+      const user = userCollection.find().limit(6); // Limit to 6 products
+      const result = await user.toArray();
+      res.send(result);
+    });
+
     app.get('/users/equipment/:email', async (req, res) => {
       const email = req.params.email;
       const query = { email: email }; // Query equipment by email
