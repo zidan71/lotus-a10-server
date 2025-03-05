@@ -1,15 +1,15 @@
-require('dotenv').config()
+
 const express = require('express');
 const cors = require('cors');
-const port = process.env.PORT || 5000;
-const app = express()
+require('dotenv').config()
+const app = express();
+const port = process.env.PORT || 5000
 
-// middleware
-app.use(cors())
+//middleware
+app.use(cors()) 
 app.use(express.json())
 
-// muhaimin
-// CwQEyq0lxrOj8jg5
+
 
 
 const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
@@ -30,9 +30,47 @@ const userCollection = client.db('userCollect').collection('users')
 async function run() {
   try {
     // Connect the client to the server	(optional starting in v4.7)
-    await client.connect();
+    // await client.connect();
 
     
+    
+    
+    app.get('/users', async (req, res) => {
+      const user = userCollection.find()
+      const result = await user.toArray()
+      res.send(result)
+    })
+
+    app.get('/users/limit', async (req, res) => {
+      const user = userCollection.find().limit(6); 
+      const result = await user.toArray();
+      res.send(result);
+    });
+
+
+    app.get('/users/equipment/:email', async (req, res) => {
+      const email = req.params.email;
+      const query = { email: email }; 
+      const result = await userCollection.find(query).toArray();
+      res.send(result);
+
+    });
+
+
+    app.get('/users/:id', async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) }
+      const result = await userCollection.findOne(query);
+      res.send(result)
+    })
+
+
+    app.post('/users', async (req, res) => {
+      const user = req.body;
+      const result = await userCollection.insertOne(user)
+      res.send(result)
+    })
+
     app.put('/users/:id', async(req,res)=> {
       const id = req.params.id;
       const filter ={_id: new ObjectId(id)};
@@ -47,39 +85,12 @@ async function run() {
 
     })
 
+    
 
-    app.get('/users', async (req, res) => {
-      const user = userCollection.find()
-      const result = await user.toArray()
-      res.send(result)
-    })
+   
 
-    app.get('/users/limit', async (req, res) => {
-      const user = userCollection.find().limit(6); 
-      const result = await user.toArray();
-      res.send(result);
-    });
-
-    app.get('/users/equipment/:email', async (req, res) => {
-      const email = req.params.email;
-      const query = { email: email }; 
-      const result = await userCollection.find(query).toArray();
-      res.send(result);
-
-    });
-
-    app.get('/users/:id', async (req, res) => {
-      const id = req.params.id;
-      const query = { _id: new ObjectId(id) }
-      const result = await userCollection.findOne(query);
-      res.send(result)
-    })
-
-    app.post('/users', async (req, res) => {
-      const user = req.body;
-      const result = await userCollection.insertOne(user)
-      res.send(result)
-    })
+    
+   
 
     app.delete('/users/:id', async(req,res)=> {
       const id = req.params.id;
@@ -95,7 +106,7 @@ async function run() {
 
 
     // Send a ping to confirm a successful connection
-    await client.db("admin").command({ ping: 1 });
+    // await client.db("admin").command({ ping: 1 });
     console.log("Pinged your deployment. You successfully connected to MongoDB!");
   } finally {
     // Ensures that the client will close when you finish/error
