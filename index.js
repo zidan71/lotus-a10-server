@@ -2,6 +2,7 @@
 const express = require('express');
 const cors = require('cors');
 require('dotenv').config()
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const app = express();
 const port = process.env.PORT || 5000
 
@@ -12,7 +13,7 @@ app.use(express.json())
 
 
 
-const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
+
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.ytuhl.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`;
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
@@ -25,32 +26,33 @@ const client = new MongoClient(uri, {
 });
 
 
-const userCollection = client.db('userCollect').collection('users')
+
 
 async function run() {
   try {
     // Connect the client to the server	(optional starting in v4.7)
     // await client.connect();
-
     
+    
+    const userCollection = client.db('userCollect').collection('users')
     
     
     app.get('/users', async (req, res) => {
-      const user = userCollection.find()
-      const result = await user.toArray()
+      const cursor = userCollection.find()
+      const result = await cursor.toArray()
       res.send(result)
     })
 
     app.get('/users/limit', async (req, res) => {
-      const user = userCollection.find().limit(6); 
-      const result = await user.toArray();
+      const cursor = userCollection.find().limit(6); 
+      const result = await cursor.toArray();
       res.send(result);
     });
 
 
     app.get('/users/equipment/:email', async (req, res) => {
       const email = req.params.email;
-      const query = { email: email }; 
+      const query = { email }; 
       const result = await userCollection.find(query).toArray();
       res.send(result);
 
